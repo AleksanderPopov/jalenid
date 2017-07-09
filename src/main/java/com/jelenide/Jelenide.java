@@ -13,4 +13,12 @@ public class Jelenide {
   public static Jelement $(String css) {
     return new Jelement(By.cssSelector(css));
   }
+
+  public static Jelements $$(By locator) {
+    return new Jelements(locator);
+  }
+
+  public static Jelements $$(String css) {
+    return new Jelements(By.cssSelector(css));
+  }
 }
