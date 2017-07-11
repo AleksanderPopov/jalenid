@@ -1,11 +1,13 @@
-package com.jelenide;
+package com.jelenide.elements;
 
+import com.jelenide.Configuration;
+import com.jelenide.conditions.JelementCondition;
 import org.openqa.selenium.*;
 
 import java.util.List;
 
-import static com.jelenide.JelementConditions.visible;
-import static com.jelenide.WebDriverRunner.getDriver;
+import static com.jelenide.conditions.JelementConditions.visible;
+import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 
 /**
  * Created by Alex on 7/9/2017.
@@ -13,33 +15,38 @@ import static com.jelenide.WebDriverRunner.getDriver;
 public class Jelement implements WebElement {
   private final By locator;
   private final Jelement contex;
-  private final WebDriver driver;
+  private final WebElement cachedElement;
 
-  public Jelement(By locator) {
-    this(locator, null);
+  Jelement(By locator) {
+    this(locator, null, null);
   }
+
+  Jelement(WebElement element) { this(null, null, element); }
 
   private Jelement(By locator, Jelement contex) {
-    this.locator = locator;
-    this.contex = contex;
-    this.driver = getDriver();
+    this(locator, contex, null);
   }
 
-
-  public Jelement find(By locator) {
-    return new Jelement(locator, this);
+  private Jelement(By locator, Jelement contex, WebElement initialElement) {
+    this.locator = locator;
+    this.contex = contex;
+    this.cachedElement = initialElement;
   }
 
   public Jelement find(String css) {
-    return new Jelement(By.cssSelector(css), this);
+    return find(By.cssSelector(css));
+  }
+
+  public Jelement find(By locator) {
+    return new Jelement(locator, this);
   }
 
   public Jelements findAll(By locator) {
     return new Jelements(locator, this);
   }
 
-  public Jelements findAll(String css) {
-    return new Jelements(By.cssSelector(css), this);
+  public Jelement shouldHave(JelementCondition condition) {
+    return condition.apply(this);
   }
 
   public Jelement val(String value) {
@@ -52,11 +59,12 @@ public class Jelement implements WebElement {
     return this;
   }
 
-  private WebElement finder() {
-    return contex == null ? driver.findElement(locator) : contex.findElement(locator);
+  private WebElement find() {
+    return cachedElement != null ? cachedElement :
+            contex != null ? contex.findElement(locator): getDriver().findElement(locator);
   }
 
-  private Jelement waitFor(JelementCondition condition) {
+  private WebElement waitFor(JelementCondition condition) {
 
     long endTime = System.currentTimeMillis() + Configuration.timeout;
 
@@ -64,7 +72,7 @@ public class Jelement implements WebElement {
       try {
         Jelement result = condition.apply(this);
         if (result != null)
-          return result;
+          return result.find();
       } catch (WebDriverException e) {/*NOP*/}
       if (System.currentTimeMillis() > endTime)
         throw new AssertionError("element " + locator + " is not " + condition);
@@ -78,81 +86,81 @@ public class Jelement implements WebElement {
 
   @Override
   public void submit() {
-    finder().submit();
+    find().submit();
   }
 
   @Override
   public void sendKeys(CharSequence... charSequences) {
-    finder().sendKeys(charSequences);
+    find().sendKeys(charSequences);
   }
 
   @Override
   public void clear() {
-    finder().clear();
+    find().clear();
   }
 
   @Override
   public String getTagName() {
-    return finder().getTagName();
+    return find().getTagName();
   }
 
   @Override
   public String getAttribute(String s) {
-    return finder().getAttribute(s);
+    return find().getAttribute(s);
   }
 
   @Override
   public boolean isSelected() {
-    return finder().isSelected();
+    return find().isSelected();
   }
 
   @Override
   public boolean isEnabled() {
-    return finder().isEnabled();
+    return find().isEnabled();
   }
 
   @Override
   public String getText() {
-    return finder().getText();
+    return find().getText();
   }
 
   @Override
   public List<WebElement> findElements(By by) {
-    return finder().findElements(by);
+    return find().findElements(by);
   }
 
   @Override
   public WebElement findElement(By by) {
-    return finder().findElement(by);
+    return find().findElement(by);
   }
 
   @Override
   public boolean isDisplayed() {
-    return finder().isDisplayed();
+    return find().isDisplayed();
   }
 
   @Override
   public Point getLocation() {
-    return finder().getLocation();
+    return find().getLocation();
   }
 
   @Override
   public Dimension getSize() {
-    return finder().getSize();
+    return find().getSize();
   }
 
   @Override
   public Rectangle getRect() {
-    return finder().getRect();
+    return find().getRect();
   }
 
   @Override
   public String getCssValue(String s) {
-    return finder().getCssValue(s);
+    return find().getCssValue(s);
   }
 
   @Override
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
-    return finder().getScreenshotAs(outputType);
+    return find().getScreenshotAs(outputType);
   }
 }
