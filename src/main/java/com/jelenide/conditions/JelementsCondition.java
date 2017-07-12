@@ -1,7 +1,7 @@
 package com.jelenide.conditions;
 
 
-import com.jelenide.elements.Jelements;
+import com.jelenide.Jelements;
 
 import java.util.function.Function;
 

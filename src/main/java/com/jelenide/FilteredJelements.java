@@ -1,4 +1,4 @@
-package com.jelenide.elements;
+package com.jelenide;
 
 import com.jelenide.conditions.JelementCondition;
 import org.openqa.selenium.WebElement;
@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Created by Alex on 7/11/2017.
  */
-public class FilteredJelements extends Jelements {
+public class FilteredJelements extends DefaultJelements {
   private final Jelements initial;
   private final JelementCondition condition;
 
@@ -20,7 +20,7 @@ public class FilteredJelements extends Jelements {
   }
 
   @Override
-  protected Collection<WebElement> find() {
+  public Collection<WebElement> find() {
     return initial.stream().filter(jelement -> condition.apply(jelement) != null).collect(toList());
   }
 }

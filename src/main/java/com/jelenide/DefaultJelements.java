@@ -1,6 +1,5 @@
-package com.jelenide.elements;
+package com.jelenide;
 
-import com.jelenide.Configuration;
 import com.jelenide.conditions.JelementCondition;
 import com.jelenide.conditions.JelementsCondition;
 import com.jelenide.conditions.JelementsConditions;
@@ -16,30 +15,30 @@ import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Created by Alex on 7/10/2017.
+ * Created by apop on 7/12/2017.
  */
-public class Jelements extends AbstractCollection<Jelement> {
+public class DefaultJelements extends AbstractCollection<Jelement> implements Jelements {
   private final By locator;
   private final Jelement contex;
   private final Collection<WebElement> cachedElements;
 
-  Jelements() {
+  DefaultJelements() {
     this(null, null, null);
   }
 
-  Jelements(By locator) {
+  DefaultJelements(By locator) {
     this(locator, null, null);
   }
 
-  Jelements(By locator, Jelement contex) {
+  DefaultJelements(By locator, Jelement contex) {
     this(locator, contex, null);
   }
 
-  Jelements(Collection<WebElement> elements) {
+  DefaultJelements(Collection<WebElement> elements) {
     this(null, null, elements);
   }
 
-  private Jelements(By locator, Jelement contex, Collection<WebElement> elements) {
+  private DefaultJelements(By locator, Jelement contex, Collection<WebElement> elements) {
     this.locator = locator;
     this.contex = contex;
     this.cachedElements = elements;
@@ -54,10 +53,14 @@ public class Jelements extends AbstractCollection<Jelement> {
   }
 
   public Jelement first() {
-    return this.shouldHave(JelementsConditions.sizeGreaterThan(1)).stream().findFirst().orElseThrow(AssertionError::new);
+    return get(0);
   }
 
-  protected Collection<WebElement> find() {
+  public Jelement get(int index) {
+    return this.shouldHave(JelementsConditions.sizeGreaterThan(index + 1)).toArray(new Jelement[0])[index];
+  }
+
+  public Collection<WebElement> find() {
     return cachedElements != null ? cachedElements :
             contex != null ? contex.findElements(locator) : getDriver().findElements(locator);
   }
@@ -79,11 +82,12 @@ public class Jelements extends AbstractCollection<Jelement> {
 
   @Override
   public Iterator<Jelement> iterator() {
-    return find().stream().map(Jelement::new).collect(toList()).iterator();
+    return find().stream().map(we -> (Jelement) new DefaultJelement(we)).collect(toList()).iterator();
   }
 
   @Override
   public int size() {
     return find().size();
   }
+
 }

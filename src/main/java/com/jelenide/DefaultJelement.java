@@ -1,65 +1,78 @@
-package com.jelenide.elements;
+package com.jelenide;
 
-import com.jelenide.Configuration;
 import com.jelenide.conditions.JelementCondition;
 import org.openqa.selenium.*;
 
 import java.util.List;
 
+import static com.jelenide.Selectors.byCss;
 import static com.jelenide.conditions.JelementConditions.visible;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 
 /**
- * Created by Alex on 7/9/2017.
+ * Created by apop on 7/12/2017.
  */
-public class Jelement implements WebElement {
+public class DefaultJelement implements Jelement {
   private final By locator;
   private final Jelement contex;
   private final WebElement cachedElement;
 
-  Jelement(By locator) {
+  protected DefaultJelement() {
+    this(null, null, null);
+  }
+
+  DefaultJelement(By locator) {
     this(locator, null, null);
   }
 
-  Jelement(WebElement element) { this(null, null, element); }
+  DefaultJelement(WebElement element) { this(null, null, element); }
 
-  private Jelement(By locator, Jelement contex) {
+  private DefaultJelement(By locator, Jelement contex) {
     this(locator, contex, null);
   }
 
-  private Jelement(By locator, Jelement contex, WebElement initialElement) {
+  private DefaultJelement(By locator, Jelement contex, WebElement element) {
     this.locator = locator;
     this.contex = contex;
-    this.cachedElement = initialElement;
+    this.cachedElement = element;
   }
 
   public Jelement find(String css) {
-    return find(By.cssSelector(css));
+    return find(byCss(css));
   }
 
   public Jelement find(By locator) {
-    return new Jelement(locator, this);
+    return new DefaultJelement(locator, this);
+  }
+
+  public Jelements findAll(String css) {
+    return findAll(byCss(css));
   }
 
   public Jelements findAll(By locator) {
-    return new Jelements(locator, this);
+    return new DefaultJelements(locator, this);
   }
 
   public Jelement shouldHave(JelementCondition condition) {
-    return condition.apply(this);
+    return new DefaultJelement(waitFor(condition));
+  }
+
+  public Jelement shouldBe(JelementCondition condition) {
+    return shouldHave(condition);
   }
 
   public Jelement val(String value) {
-    waitFor(visible()).sendKeys(value);
+    this.shouldBe(visible()).clear();
+    this.shouldBe(visible()).sendKeys(value);
     return this;
   }
 
   public Jelement pressEnter() {
-    waitFor(visible()).sendKeys(Keys.ENTER);
+    this.shouldBe(visible()).sendKeys(Keys.ENTER);
     return this;
   }
 
-  private WebElement find() {
+  public WebElement find() {
     return cachedElement != null ? cachedElement :
             contex != null ? contex.findElement(locator): getDriver().findElement(locator);
   }
@@ -75,7 +88,7 @@ public class Jelement implements WebElement {
           return result.find();
       } catch (WebDriverException e) {/*NOP*/}
       if (System.currentTimeMillis() > endTime)
-        throw new AssertionError("element " + locator + " is not " + condition);
+        throw new AssertionError("element located " + locator + " is not " + condition);
     }
   }
 
@@ -86,17 +99,17 @@ public class Jelement implements WebElement {
 
   @Override
   public void submit() {
-    find().submit();
+    waitFor(visible()).submit();
   }
 
   @Override
   public void sendKeys(CharSequence... charSequences) {
-    find().sendKeys(charSequences);
+    waitFor(visible()).sendKeys(charSequences);
   }
 
   @Override
   public void clear() {
-    find().clear();
+    waitFor(visible()).clear();
   }
 
   @Override
@@ -162,5 +175,20 @@ public class Jelement implements WebElement {
   @Override
   public <X> X getScreenshotAs(OutputType<X> outputType) throws WebDriverException {
     return find().getScreenshotAs(outputType);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    return find().equals(o);
+  }
+
+  @Override
+  public int hashCode() {
+    return find().hashCode();
+  }
+
+  @Override
+  public String toString() {
+    return find().toString();
   }
 }

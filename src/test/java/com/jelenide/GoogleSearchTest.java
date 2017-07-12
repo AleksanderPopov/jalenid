@@ -1,18 +1,10 @@
 package com.jelenide;
 
-import com.jelenide.elements.Jelement;
-import com.jelenide.elements.Jelements;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.FluentWait;
 
-import java.util.concurrent.TimeUnit;
-
-import static com.jelenide.elements.Jelenide.$;
-import static com.jelenide.elements.Jelenide.$$;
+import static com.jelenide.Jelenide.*;
+import static com.jelenide.Selectors.byCss;
 import static com.jelenide.conditions.JelementConditions.text;
 import static com.jelenide.conditions.JelementConditions.visible;
 import static com.jelenide.conditions.JelementsConditions.size;
@@ -33,22 +25,13 @@ public class GoogleSearchTest {
     }
   }
 
-  @BeforeClass
-  public static void beforeClass() {
+  @Test
+  public void b() {
+
     setDriver(new ChromeDriver());
     getDriver().manage().window().maximize();
-  }
 
-  @AfterClass
-  public static void afterClass() {
 
-    pause(1000);
-    getDriver().close();
-    getDriver().quit();
-  }
-
-  @Test
-  public void searchAndFollowFirstResult() {
     getDriver().get("https:/google.com/ncr");
 
     $("#lst-ib").val("Selenium automates browsers").pressEnter();
@@ -58,10 +41,33 @@ public class GoogleSearchTest {
             .find("a").click();
 
     Wait().until(urlToBe("http://www.seleniumhq.org/"));
+
+    pause(1000);
+    getDriver().close();
+    getDriver().quit();
   }
 
-  public FluentWait<WebDriver> Wait() {
-    return new FluentWait<WebDriver>(getDriver()).withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS).pollingEvery(Configuration.pollingInterval, TimeUnit.MILLISECONDS);
+
+  GoogleSearchField search = $("#lst-ib", new GoogleSearchField());
+
+  @Test
+  public void reflectionSearch() throws NoSuchFieldException, IllegalAccessException {
+
+    setDriver(new ChromeDriver());
+    getDriver().manage().window().maximize();
+    getDriver().get("https:/google.com/ncr");
+
+    $(byCss("#lst-ib"), new GoogleSearchField()).searchFor("Selenium automates browsers");
+
+    $$(".g .r").filter(visible()).shouldHave(size(10))
+            .first().shouldHave(text("Selenium - Web Browser Automation"))
+            .find("a").click();
+
+    Wait().until(urlToBe("http://www.seleniumhq.org/"));
+
+    pause(1000);
+    getDriver().close();
+    getDriver().quit();
   }
 
 }

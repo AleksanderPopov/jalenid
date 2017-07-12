@@ -1,6 +1,6 @@
 package com.jelenide.conditions;
 
-import com.jelenide.elements.Jelement;
+import com.jelenide.Jelement;
 import org.openqa.selenium.WebDriverException;
 
 import java.util.function.Predicate;
@@ -11,7 +11,11 @@ import java.util.function.Predicate;
 public class JelementConditions {
 
   public static JelementCondition visible() {
-    return doIgnoreException((Jelement::isDisplayed));
+    return doIgnoreException(Jelement::isDisplayed);
+  }
+
+  public static JelementCondition hidden() {
+    return doIgnoreException(j -> !j.isDisplayed());
   }
 
   public static JelementCondition text(String text) {
