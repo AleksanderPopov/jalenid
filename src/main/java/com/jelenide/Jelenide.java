@@ -11,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 import static com.jelenide.Jelement.findBy;
 import static com.jelenide.Jelement.wrap;
 import static com.jelenide.Jelements.findAll;
+import static com.jelenide.Jelements.findAllTyped;
 import static com.jelenide.Jelements.wrapAll;
 import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
 import static com.jelenide.Selectors.byCss;
@@ -58,11 +59,11 @@ public class Jelenide {
   }
 
   public static <T extends Jelement> Jelements<T> $$(By locator, Class<T> type) {
-    return Jelements.findAllTyped(locator, type);
+    return findAllTyped(locator, type);
   }
 
 //  public static <T extends Jelement> Jelements<T> $$(Collection<WebElement> elements, Class<T> type) {
-//    return Jelements.findAllTyped(elements, type);
+//    return findAllTyped(elements, type);
 //  }
 
   public static FluentWait<WebDriver> Wait() {
