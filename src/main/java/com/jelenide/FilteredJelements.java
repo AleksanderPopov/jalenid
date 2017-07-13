@@ -7,9 +7,6 @@ import java.util.Collection;
 
 import static java.util.stream.Collectors.toList;
 
-/**
- * Created by Alex on 7/11/2017.
- */
 public class FilteredJelements<T extends Jelement> extends Jelements<T> {
   private final Jelements<T> initial;
   private final JelementCondition condition;

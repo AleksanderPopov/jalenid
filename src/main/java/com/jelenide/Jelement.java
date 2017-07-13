@@ -9,9 +9,6 @@ import static com.jelenide.Selectors.byCss;
 import static com.jelenide.conditions.JelementConditions.visible;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 
-/**
- * Created by apop on 7/12/2017.
- */
 public class Jelement implements WebElement {
   private final By locator;
   private final Jelement contex;
@@ -21,20 +18,22 @@ public class Jelement implements WebElement {
     this(null, null, null);
   }
 
-  Jelement(By locator) {
-    this(locator, null, null);
-  }
-
-  Jelement(WebElement element) { this(null, null, element); }
-
-  private Jelement(By locator, Jelement contex) {
-    this(locator, contex, null);
-  }
-
   private Jelement(By locator, Jelement contex, WebElement element) {
     this.locator = locator;
     this.contex = contex;
     this.element = element;
+  }
+
+  static Jelement findBy(By locator) {
+    return new Jelement(locator, null, null);
+  }
+
+  static Jelement wrap(WebElement element) {
+    return new Jelement(null, null, element);
+  }
+
+  private static Jelement findInContex(By locator, Jelement contex) {
+    return new Jelement(locator, contex, null);
   }
 
   public Jelement find(String css) {
@@ -42,7 +41,7 @@ public class Jelement implements WebElement {
   }
 
   public Jelement find(By locator) {
-    return new Jelement(locator, this);
+    return findInContex(locator, this);
   }
 
   public Jelements findAll(String css) {
@@ -50,11 +49,11 @@ public class Jelement implements WebElement {
   }
 
   public Jelements findAll(By locator) {
-    return Jelements.fromContext(locator, this);
+    return Jelements.findAllInContex(locator, this);
   }
 
   public Jelement shouldHave(JelementCondition condition) {
-    return new Jelement(waitFor(condition));
+    return wrap(waitFor(condition));
   }
 
   public Jelement shouldBe(JelementCondition condition) {
@@ -74,7 +73,7 @@ public class Jelement implements WebElement {
 
   public WebElement find() {
     return element != null ? element :
-            contex != null ? contex.findElement(locator): getDriver().findElement(locator);
+            contex != null ? contex.findElement(locator) : getDriver().findElement(locator);
   }
 
   private WebElement waitFor(JelementCondition condition) {
@@ -82,11 +81,9 @@ public class Jelement implements WebElement {
     long endTime = System.currentTimeMillis() + Configuration.timeout;
 
     while (true) {
-      try {
-        Jelement result = condition.apply(this);
-        if (result != null)
-          return result.find();
-      } catch (WebDriverException e) {/*NOP*/}
+      Jelement result = condition.apply(this);
+      if (result != null)
+        return result.find(); // DO NOT REMOVE easily
       if (System.currentTimeMillis() > endTime)
         throw new AssertionError("element located " + locator + " is not " + condition);
     }
@@ -99,17 +96,17 @@ public class Jelement implements WebElement {
 
   @Override
   public void submit() {
-    waitFor(visible()).submit();
+    find().submit();
   }
 
   @Override
   public void sendKeys(CharSequence... charSequences) {
-    waitFor(visible()).sendKeys(charSequences);
+    find().sendKeys(charSequences);
   }
 
   @Override
   public void clear() {
-    waitFor(visible()).clear();
+    find().clear();
   }
 
   @Override

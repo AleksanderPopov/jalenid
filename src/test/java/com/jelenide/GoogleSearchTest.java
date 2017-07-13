@@ -12,13 +12,10 @@ import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 import static com.jelenide.webdriver.WebDriverRunner.setDriver;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 
-/**
- * Created by Alex on 7/9/2017.
- */
 public class GoogleSearchTest {
 
   @Test
-  public void b() {
+  public void ajelements() {
 
     setDriver(new ChromeDriver());
     getDriver().manage().window().maximize();
@@ -37,7 +34,7 @@ public class GoogleSearchTest {
   }
 
   @Test
-  public void reflectionSearch() {
+  public void bsmartjelements() {
 
     setDriver(new ChromeDriver());
     getDriver().manage().window().maximize();

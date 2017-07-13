@@ -2,9 +2,6 @@ package com.jelenide;
 
 import java.lang.reflect.Field;
 
-/**
- * Created by apop on 7/12/2017.
- */
 class ReflectionTools {
 
   public static <T extends Jelement> T newInstanceWithFieldValue(Class<T> type, String fieldName, Object fieldValue) {

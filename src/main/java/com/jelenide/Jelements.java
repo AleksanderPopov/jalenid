@@ -10,34 +10,32 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static com.jelenide.Jelement.wrap;
 import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
 import static com.jelenide.conditions.JelementsConditions.sizeGreaterThan;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 import static java.util.stream.Collectors.toList;
 
-/**
- * Created by apop on 7/12/2017.
- */
 public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   private final By locator;
   private final Jelement contex;
   private final Collection<? extends WebElement> cachedElements;
   private final Class<T> type;
 
-  static <T extends Jelement> Jelements<T> by(By locator) {
-    return new Jelements<T>(locator, null, null, null);
+  static <T extends Jelement> Jelements<T> findAll(By locator) {
+    return new Jelements<>(locator, null, null, null);
   }
 
-  static <T extends Jelement> Jelements<T> typed(By locator, Class<T> type) {
-    return new Jelements<T>(locator, null, type, null);
+  static <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
+    return new Jelements<>(locator, null, type, null);
   }
 
-  static <T extends Jelement> Jelements<T> wrap(Collection<WebElement> elements) {
-    return new Jelements<T>(null, null, null, elements);
+  static <T extends Jelement> Jelements<T> wrapAll(Collection<WebElement> elements) {
+    return new Jelements<>(null, null, null, elements);
   }
 
-  static <T extends Jelement> Jelements<T> fromContext(By locator, Jelement contex) {
-    return new Jelements<T>(locator, contex, null, null);
+  static <T extends Jelement> Jelements<T> findAllInContex(By locator, Jelement contex) {
+    return new Jelements<>(locator, contex, null, null);
   }
 
   protected Jelements(Jelements<T> initial, Class<T> type) { this(null, null, type, initial); }
@@ -91,7 +89,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
 
   @Override
   public Iterator<T> iterator() {
-    return find().stream().map(we -> (T) new Jelement(we)).collect(toList()).iterator();
+    return find().stream().map(we -> (T) wrap(we)).collect(toList()).iterator();
   }
 
   @Override
