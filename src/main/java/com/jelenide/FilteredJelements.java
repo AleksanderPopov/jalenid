@@ -10,14 +10,29 @@ import static java.util.stream.Collectors.toList;
 /**
  * Created by Alex on 7/11/2017.
  */
-public class FilteredJelements extends DefaultJelements {
-  private final Jelements initial;
+public class FilteredJelements<T extends Jelement> extends DefaultJelements<T> {
+  private final Jelements<T> initial;
   private final JelementCondition condition;
 
-  FilteredJelements(Jelements initial, JelementCondition condition) {
+  protected FilteredJelements(Jelements<T> initial, JelementCondition condition, Class<T> type) {
+    super(initial, type);
     this.initial = initial;
     this.condition = condition;
   }
+
+  static <T extends Jelement> FilteredJelements<T> of(Jelements<T> initial, JelementCondition condition) {
+    return new FilteredJelements<>(initial, condition, null);
+  }
+
+  static <T extends Jelement> FilteredJelements<T> typed(Jelements<T> initial, JelementCondition condition, Class<T> type) {
+    return new FilteredJelements<>(initial, condition, type);
+  }
+
+//  private FilteredJelements(Jelements<T> initial, JelementCondition condition, Class<T> type) {
+//    this.initial = initial;
+//    this.condition = condition;
+//    this.type = type;
+//  }
 
   @Override
   public Collection<WebElement> find() {

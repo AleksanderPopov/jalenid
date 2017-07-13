@@ -7,25 +7,44 @@ import java.lang.reflect.Field;
  */
 class ReflectionTools {
 
-  public static void setFieldValue(Object object, String fieldname, Object fieldValue) {
+  public static void setFieldValue(Object object, String fieldName, Object fieldValue) {
+    Class<?> clazz = object.getClass();
+
     try {
-      Class<?> clazz = getClassWithField(object.getClass(), fieldname);
-      Field field = clazz.getDeclaredField(fieldname);
+      while (true) {
+        try {
+          if (clazz.getDeclaredField(fieldName) != null) {
+            break;
+          }
+        } catch (NoSuchFieldException e) {
+          if (clazz.getSuperclass().equals(Object.class)) {
+            throw new AssertionError("No field '" + fieldName + "' found.");
+          } else {
+            clazz = clazz.getSuperclass();
+          }
+        }
+      }
+
+      Field field = clazz.getDeclaredField(fieldName);
       field.setAccessible(true);
       field.set(object, fieldValue);
-    } catch (NoSuchFieldException | IllegalAccessException e) {
+    } catch (IllegalAccessException | NoSuchFieldException e) {
       throw new AssertionError();
     }
   }
 
-  private static Class<?> getClassWithField(Class<?> clazz, String fieldName) throws NoSuchFieldException {
+  private static Class<?> getClassWithField(Class<?> clazz, String fieldName) {
     while (true) {
-      if (clazz.getDeclaredField(fieldName) != null) {
-        return clazz;
-      } else if (clazz.getSuperclass().equals(Object.class)) {
-        throw new AssertionError("No field '" + fieldName + "' found.");
-      } else {
-        clazz = clazz.getSuperclass();
+      try {
+        if (clazz.getDeclaredField(fieldName) != null) {
+          return clazz;
+        }
+      } catch (NoSuchFieldException e) {
+        if (clazz.getSuperclass().equals(Object.class)) {
+          throw new AssertionError("No field '" + fieldName + "' found.");
+        } else {
+          clazz = clazz.getSuperclass();
+        }
       }
     }
   }

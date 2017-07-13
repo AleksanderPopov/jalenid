@@ -17,14 +17,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
  */
 public class GoogleSearchTest {
 
-  public static void pause(int mills) {
-    try {
-      Thread.sleep(mills);
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-  }
-
   @Test
   public void b() {
 
@@ -34,7 +26,8 @@ public class GoogleSearchTest {
 
     getDriver().get("https:/google.com/ncr");
 
-    $("#lst-ib").val("Selenium automates browsers").pressEnter();
+    Jelement jelement = $("#lst-ib");
+    jelement.val("Selenium automates browsers").pressEnter();
 
     $$(".g .r").filter(visible()).shouldHave(size(10))
             .first().shouldHave(text("Selenium - Web Browser Automation"))
@@ -42,32 +35,32 @@ public class GoogleSearchTest {
 
     Wait().until(urlToBe("http://www.seleniumhq.org/"));
 
-    pause(1000);
     getDriver().close();
     getDriver().quit();
   }
 
 
   GoogleSearchField search = $("#lst-ib", new GoogleSearchField());
+  Jelements<GoogleSearchResult> results = $$(byCss(".g .r"), GoogleSearchResult.class);
 
   @Test
-  public void reflectionSearch() throws NoSuchFieldException, IllegalAccessException {
+  public void reflectionSearch() {
 
     setDriver(new ChromeDriver());
     getDriver().manage().window().maximize();
     getDriver().get("https:/google.com/ncr");
 
-    $(byCss("#lst-ib"), new GoogleSearchField()).searchFor("Selenium automates browsers");
+    search.searchFor("Selenium automates browsers");
 
-    $$(".g .r").filter(visible()).shouldHave(size(10))
-            .first().shouldHave(text("Selenium - Web Browser Automation"))
-            .find("a").click();
+    results.filter(visible())
+            .shouldHave(size(10))
+            .first()
+            .shouldHaveTitle("Selenium - Web Browser Automation")
+            .clickLink();
 
     Wait().until(urlToBe("http://www.seleniumhq.org/"));
 
-    pause(1000);
     getDriver().close();
     getDriver().quit();
   }
-
 }

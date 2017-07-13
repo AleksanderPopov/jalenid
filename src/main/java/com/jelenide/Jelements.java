@@ -2,29 +2,21 @@ package com.jelenide;
 
 import com.jelenide.conditions.JelementCondition;
 import com.jelenide.conditions.JelementsCondition;
-import com.jelenide.conditions.JelementsConditions;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
-import java.util.AbstractCollection;
 import java.util.Collection;
-import java.util.Iterator;
-
-import static com.jelenide.webdriver.WebDriverRunner.getDriver;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Created by Alex on 7/10/2017.
  */
-public interface Jelements extends Collection<Jelement> {
+public interface Jelements<T extends Jelement> extends Collection<T> {
 
-  Jelements filter(JelementCondition condition);
+  Jelements<T> filter(JelementCondition condition);
 
-  Jelements shouldHave(JelementsCondition condition);
+  Jelements<T> shouldHave(JelementsCondition condition);
 
-  Jelement first();
+  T first();
 
-  Collection<WebElement> find();
+  Collection<? extends WebElement> find();
 
 }

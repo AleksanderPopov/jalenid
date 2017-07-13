@@ -50,7 +50,7 @@ public class DefaultJelement implements Jelement {
   }
 
   public Jelements findAll(By locator) {
-    return new DefaultJelements(locator, this);
+    return DefaultJelements.fromContext(locator, this);
   }
 
   public Jelement shouldHave(JelementCondition condition) {

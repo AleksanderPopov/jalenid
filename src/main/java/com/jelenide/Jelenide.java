@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
 
-import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
@@ -39,15 +38,19 @@ public class Jelenide {
   }
 
   public static Jelements $$(String css) {
-    return new DefaultJelements(byCss(css));
+    return DefaultJelements.by(byCss(css));
   }
 
   public static Jelements $$(By locator) {
-    return new DefaultJelements(locator);
+    return DefaultJelements.by(locator);
   }
 
   public static Jelements $$(Collection<WebElement> elements) {
-    return new DefaultJelements(elements);
+    return DefaultJelements.wrap(elements);
+  }
+
+  public static <T extends Jelement> Jelements<T> $$(By locator, Class<T> type) {
+    return DefaultJelements.typed(locator, type);
   }
 
   public static FluentWait<WebDriver> Wait() {
