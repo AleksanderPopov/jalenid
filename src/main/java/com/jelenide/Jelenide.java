@@ -62,9 +62,9 @@ public class Jelenide {
     return findAllTyped(locator, type);
   }
 
-//  public static <T extends Jelement> Jelements<T> $$(Collection<WebElement> elements, Class<T> type) {
-//    return findAllTyped(elements, type);
-//  }
+  public static <T extends Jelement> Jelements<T> $$(Collection<WebElement> elements, Class<T> type) {
+    return findAllTyped(elements, type);
+  }
 
   public static FluentWait<WebDriver> Wait() {
     return new FluentWait<>(getDriver()).withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS).pollingEvery(Configuration.pollingInterval, TimeUnit.MILLISECONDS);

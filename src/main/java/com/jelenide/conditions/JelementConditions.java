@@ -1,7 +1,7 @@
 package com.jelenide.conditions;
 
-import com.jelenide.Jelement;
 import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 
 import java.util.function.Predicate;
 
@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 public class JelementConditions {
 
   public static JelementCondition visible() {
-    return doIgnoreException(Jelement::isDisplayed);
+    return doIgnoreException(WebElement::isDisplayed);
   }
 
   public static JelementCondition hidden() {
@@ -22,7 +22,7 @@ public class JelementConditions {
     return doIgnoreException(jelement -> text.trim().equalsIgnoreCase(jelement.getText().trim()));
   }
 
-  private static JelementCondition doIgnoreException(Predicate<Jelement> predicate) {
+  private static JelementCondition doIgnoreException(Predicate<WebElement> predicate) {
     return jelement -> {
       try {
         return predicate.test(jelement) ? jelement : null;

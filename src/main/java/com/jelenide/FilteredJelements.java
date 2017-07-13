@@ -11,22 +11,18 @@ public class FilteredJelements<T extends Jelement> extends Jelements<T> {
   private final Jelements<T> initial;
   private final JelementCondition condition;
 
-  protected FilteredJelements(Jelements<T> initial, JelementCondition condition, Class<T> type) {
-    super(initial, type);
+  private FilteredJelements(Jelements<T> initial, JelementCondition condition) {
+    super(initial);
     this.initial = initial;
     this.condition = condition;
   }
 
   static <T extends Jelement> FilteredJelements<T> of(Jelements<T> initial, JelementCondition condition) {
-    return new FilteredJelements<>(initial, condition, null);
-  }
-
-  static <T extends Jelement> FilteredJelements<T> typed(Jelements<T> initial, JelementCondition condition, Class<T> type) {
-    return new FilteredJelements<>(initial, condition, type);
+    return new FilteredJelements<>(initial, condition);
   }
 
   @Override
   public Collection<WebElement> find() {
-    return initial.stream().filter(jelement -> condition.apply(jelement) != null).collect(toList());
+    return initial.find().stream().filter(element -> condition.apply(element) != null).collect(toList());
   }
 }

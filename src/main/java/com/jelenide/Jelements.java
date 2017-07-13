@@ -18,17 +18,17 @@ import static java.util.stream.Collectors.toList;
 public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   private final By locator;
   private final Jelement contex;
-  private final Collection<? extends WebElement> cachedElements;
+  private final Collection<WebElement> elements;
   private final Class<T> type;
 
-  protected Jelements(Jelements<T> initial, Class<T> type) {
-    this(null, null, type, initial);
+  protected Jelements(Jelements<T> initial) {
+    this(initial.locator, initial.contex, initial.type, initial.elements);
   }
 
-  private Jelements(By locator, Jelement contex, Class<T> clazz, Collection<? extends WebElement> elements) {
+  private Jelements(By locator, Jelement contex, Class<T> clazz, Collection<WebElement> elements) {
     this.locator = locator;
     this.contex = contex;
-    this.cachedElements = elements;
+    this.elements = elements;
     this.type = clazz;
   }
 
@@ -36,20 +36,24 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
     return new Jelements<>(locator, null, null, null);
   }
 
-  static <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
-    return new Jelements<>(locator, null, type, null);
+  static <T extends Jelement> Jelements<T> findAllInContex(By locator, Jelement contex) {
+    return new Jelements<>(locator, contex, null, null);
   }
 
   static <T extends Jelement> Jelements<T> wrapAll(Collection<WebElement> elements) {
     return new Jelements<>(null, null, null, elements);
   }
 
-  static <T extends Jelement> Jelements<T> findAllInContex(By locator, Jelement contex) {
-    return new Jelements<>(locator, contex, null, null);
+  static <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
+    return new Jelements<>(locator, null, type, null);
+  }
+
+  static <T extends Jelement> Jelements<T> findAllTyped(Collection<WebElement> elements, Class<T> type) {
+    return new Jelements<>(null, null, type, elements);
   }
 
   public Jelements<T> filter(JelementCondition condition) {
-    return type != null ? FilteredJelements.typed(this, condition, type) : FilteredJelements.of(this, condition);
+    return FilteredJelements.of(this, condition);
   }
 
   public Jelements<T> shouldHave(JelementsCondition<T> condition) {
@@ -68,8 +72,8 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
             .get(index);
   }
 
-  public Collection<? extends WebElement> find() {
-    return cachedElements != null ? cachedElements :
+  public Collection<WebElement> find() {
+    return elements != null ? elements :
             contex != null ? contex.findElements(locator) : getDriver().findElements(locator);
   }
 

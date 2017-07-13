@@ -81,9 +81,8 @@ public class Jelement implements WebElement {
     long endTime = System.currentTimeMillis() + Configuration.timeout;
 
     while (true) {
-      Jelement result = condition.apply(this);
-      if (result != null)
-        return result.find(); // DO NOT REMOVE easily
+      if (condition.apply(this) != null)
+        return this.find(); // DO NOT REMOVE easily
       if (System.currentTimeMillis() > endTime)
         throw new AssertionError("element located " + locator + " is not " + condition);
     }
