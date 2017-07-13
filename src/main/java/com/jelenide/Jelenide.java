@@ -17,43 +17,43 @@ import static com.jelenide.webdriver.WebDriverRunner.getDriver;
  */
 public class Jelenide {
   public static Jelement $(String css) {
-    return new DefaultJelement(byCss(css));
+    return new Jelement(byCss(css));
   }
 
   public static Jelement $(By locator) {
-    return new DefaultJelement(locator);
+    return new Jelement(locator);
   }
 
   public static Jelement $(WebElement element) {
-    return new DefaultJelement(element);
+    return new Jelement(element);
   }
 
-  public static <T extends DefaultJelement> T $(String css, T object) {
+  public static <T extends Jelement> T $(String css, T object) {
     return $(byCss(css), object);
   }
 
-  public static <T extends DefaultJelement> T $(By locator, T object) {
+  public static <T extends Jelement> T $(By locator, T object) {
     setFieldValue(object, "locator", locator);
     return object;
   }
 
   public static Jelements $$(String css) {
-    return DefaultJelements.by(byCss(css));
+    return Jelements.by(byCss(css));
   }
 
   public static Jelements $$(By locator) {
-    return DefaultJelements.by(locator);
+    return Jelements.by(locator);
   }
 
   public static Jelements $$(Collection<WebElement> elements) {
-    return DefaultJelements.wrap(elements);
+    return Jelements.wrap(elements);
   }
 
   public static <T extends Jelement> Jelements<T> $$(By locator, Class<T> type) {
-    return DefaultJelements.typed(locator, type);
+    return Jelements.typed(locator, type);
   }
 
   public static FluentWait<WebDriver> Wait() {
-    return new FluentWait<WebDriver>(getDriver()).withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS).pollingEvery(Configuration.pollingInterval, TimeUnit.MILLISECONDS);
+    return new FluentWait<>(getDriver()).withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS).pollingEvery(Configuration.pollingInterval, TimeUnit.MILLISECONDS);
   }
 }

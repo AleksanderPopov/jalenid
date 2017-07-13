@@ -10,7 +10,7 @@ import static java.util.stream.Collectors.toList;
 /**
  * Created by Alex on 7/11/2017.
  */
-public class FilteredJelements<T extends Jelement> extends DefaultJelements<T> {
+public class FilteredJelements<T extends Jelement> extends Jelements<T> {
   private final Jelements<T> initial;
   private final JelementCondition condition;
 
@@ -27,12 +27,6 @@ public class FilteredJelements<T extends Jelement> extends DefaultJelements<T> {
   static <T extends Jelement> FilteredJelements<T> typed(Jelements<T> initial, JelementCondition condition, Class<T> type) {
     return new FilteredJelements<>(initial, condition, type);
   }
-
-//  private FilteredJelements(Jelements<T> initial, JelementCondition condition, Class<T> type) {
-//    this.initial = initial;
-//    this.condition = condition;
-//    this.type = type;
-//  }
 
   @Override
   public Collection<WebElement> find() {
