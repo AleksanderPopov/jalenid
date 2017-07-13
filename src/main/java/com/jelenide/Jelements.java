@@ -10,7 +10,7 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static com.jelenide.ReflectionTools.setFieldValue;
+import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
 import static com.jelenide.conditions.JelementsConditions.sizeGreaterThan;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 import static java.util.stream.Collectors.toList;
@@ -22,7 +22,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   private final By locator;
   private final Jelement contex;
   private final Collection<? extends WebElement> cachedElements;
-  protected final Class<T> type;
+  private final Class<T> type;
 
   static <T extends Jelement> Jelements<T> by(By locator) {
     return new Jelements<T>(locator, null, null, null);
@@ -42,7 +42,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
 
   protected Jelements(Jelements<T> initial, Class<T> type) { this(null, null, type, initial); }
 
-  protected Jelements(By locator, Jelement contex, Class<T> clazz, Collection<? extends WebElement> elements) {
+  private Jelements(By locator, Jelement contex, Class<T> clazz, Collection<? extends WebElement> elements) {
     this.locator = locator;
     this.contex = contex;
     this.cachedElements = elements;
@@ -64,24 +64,9 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   public T get(int index) {
       return this.shouldHave(sizeGreaterThan(index + 1))
               .stream()
-              .map(jelement -> {
-                if(type != null) {
-                  T t = newInstance(type);
-                  setFieldValue(t, "cachedElement", jelement);
-                  return t;
-                }
-                return jelement;
-              })
+              .map(jelement -> type != null ? newInstanceWithFieldValue(type, "element", jelement) : jelement)
               .collect(toList())
               .get(index);
-  }
-
-  public static <T extends Jelement> T newInstance(Class<T> clazz) {
-    try {
-      return clazz.newInstance();
-    } catch (InstantiationException | IllegalAccessException e) {
-      throw new AssertionError(e);
-    }
   }
 
   public Collection<? extends WebElement> find() {
