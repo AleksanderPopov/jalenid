@@ -1,5 +1,6 @@
 package com.jelenide.conditions;
 
+import com.jelenide.Jelement;
 import com.jelenide.Jelements;
 
 /**
@@ -7,28 +8,38 @@ import com.jelenide.Jelements;
  */
 public class JelementsConditions {
 
-  public static JelementsCondition size(int size) {
-    return new JelementsCondition() {
+  public static <T extends Jelement> JelementsCondition<T> size(int size) {
+    return new JelementsCondition<T>() {
       @Override
-      public Jelements apply(Jelements jelements) {
+      public Jelements<T> apply(Jelements<T> jelements) {
         try {
           return jelements.size() == size ? jelements : null;
         } catch (Exception e) {
           return null;
         }
       }
+
+      @Override
+      public String toString() {
+        return "$classname{}";
+      }
     };
   }
 
-  public static JelementsCondition sizeGreaterThan(int size) {
-    return new JelementsCondition() {
+  public static <T extends Jelement> JelementsCondition<T> sizeGreaterThan(int size) {
+    return new JelementsCondition<T>() {
       @Override
-      public Jelements apply(Jelements jelements) {
+      public Jelements<T> apply(Jelements<T> jelements) {
         try {
           return jelements.size() >= size ? jelements : null;
         } catch (Exception e) {
           return null;
         }
+      }
+
+      @Override
+      public String toString() {
+        return "$classname{}";
       }
     };
   }
