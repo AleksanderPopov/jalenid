@@ -22,12 +22,9 @@ public class GoogleSearchTest {
 
     setDriver(new ChromeDriver());
     getDriver().manage().window().maximize();
-
-
     getDriver().get("https:/google.com/ncr");
 
-    Jelement jelement = $("#lst-ib");
-    jelement.val("Selenium automates browsers").pressEnter();
+    $("#lst-ib").val("Selenium automates browsers").pressEnter();
 
     $$(".g .r").filter(visible()).shouldHave(size(10))
             .first().shouldHave(text("Selenium - Web Browser Automation"))
@@ -39,10 +36,6 @@ public class GoogleSearchTest {
     getDriver().quit();
   }
 
-
-  GoogleSearchField search = $("#lst-ib", new GoogleSearchField());
-  Jelements<GoogleSearchResult> results = $$(byCss(".g .r"), GoogleSearchResult.class);
-
   @Test
   public void reflectionSearch() {
 
@@ -50,9 +43,9 @@ public class GoogleSearchTest {
     getDriver().manage().window().maximize();
     getDriver().get("https:/google.com/ncr");
 
-    search.searchFor("Selenium automates browsers");
+    $("#lst-ib", GoogleSearchField.class).searchFor("Selenium automates browsers");
 
-    results.filter(visible())
+    $$(byCss(".g .r"), GoogleSearchResult.class).filter(visible())
             .shouldHave(size(10))
             .first()
             .shouldHaveTitle("Selenium - Web Browser Automation")
