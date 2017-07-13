@@ -7,46 +7,36 @@ import java.lang.reflect.Field;
  */
 class ReflectionTools {
 
-  public static void setFieldValue(Object object, String fieldName, Object fieldValue) {
-    Class<?> clazz = object.getClass();
+  public static <T extends Jelement> T newInstanceWithFieldValue(Class<T> type, String fieldName, Object fieldValue) {
 
     try {
-      while (true) {
-        try {
-          if (clazz.getDeclaredField(fieldName) != null) {
-            break;
-          }
-        } catch (NoSuchFieldException e) {
-          if (clazz.getSuperclass().equals(Object.class)) {
-            throw new AssertionError("No field '" + fieldName + "' found.");
-          } else {
-            clazz = clazz.getSuperclass();
-          }
-        }
-      }
+      T instance = type.newInstance();
+      Class clazz = type;
 
-      Field field = clazz.getDeclaredField(fieldName);
+      Class classWithField = findClassWithField(clazz, fieldName);
+
+      Field field = classWithField.getDeclaredField(fieldName);
       field.setAccessible(true);
-      field.set(object, fieldValue);
-    } catch (IllegalAccessException | NoSuchFieldException e) {
-      throw new AssertionError();
+
+      field.set(instance, fieldValue);
+
+      return instance;
+    } catch (IllegalAccessException | InstantiationException | NoSuchFieldException e) {
+      throw new AssertionError(e);
     }
   }
 
-  private static Class<?> getClassWithField(Class<?> clazz, String fieldName) {
+
+  private static Class findClassWithField(Class clazz, String fieldName) {
     while (true) {
       try {
-        if (clazz.getDeclaredField(fieldName) != null) {
-          return clazz;
-        }
+        clazz.getDeclaredField(fieldName);
+        return clazz;
       } catch (NoSuchFieldException e) {
-        if (clazz.getSuperclass().equals(Object.class)) {
-          throw new AssertionError("No field '" + fieldName + "' found.");
-        } else {
-          clazz = clazz.getSuperclass();
-        }
+        if (clazz.equals(Object.class))
+          throw new AssertionError(e);
+        clazz = clazz.getSuperclass();
       }
     }
   }
-
 }
