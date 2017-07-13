@@ -15,7 +15,7 @@ import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 public class Jelement implements WebElement {
   private final By locator;
   private final Jelement contex;
-  private final WebElement cachedElement;
+  private final WebElement element;
 
   protected Jelement() {
     this(null, null, null);
@@ -34,7 +34,7 @@ public class Jelement implements WebElement {
   private Jelement(By locator, Jelement contex, WebElement element) {
     this.locator = locator;
     this.contex = contex;
-    this.cachedElement = element;
+    this.element = element;
   }
 
   public Jelement find(String css) {
@@ -73,7 +73,7 @@ public class Jelement implements WebElement {
   }
 
   public WebElement find() {
-    return cachedElement != null ? cachedElement :
+    return element != null ? element :
             contex != null ? contex.findElement(locator): getDriver().findElement(locator);
   }
 
