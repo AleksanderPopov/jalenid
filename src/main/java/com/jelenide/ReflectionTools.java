@@ -12,17 +12,23 @@ class ReflectionTools {
 
       Class classWithField = findClassWithField(clazz, fieldName);
 
-      Field field = classWithField.getDeclaredField(fieldName);
-      field.setAccessible(true);
-
-      field.set(instance, fieldValue);
+      setFieldValue(classWithField, instance, fieldName, fieldValue);
 
       return instance;
-    } catch (IllegalAccessException | InstantiationException | NoSuchFieldException e) {
+    } catch (IllegalAccessException | InstantiationException e) {
       throw new AssertionError(e);
     }
   }
 
+  public static void setFieldValue(Class clazz, Object instance, String fieldName, Object fieldValue) {
+    try {
+      Field field = findClassWithField(clazz, fieldName).getDeclaredField(fieldName);
+      field.setAccessible(true);
+      field.set(instance, fieldValue);
+    } catch (NoSuchFieldException | IllegalAccessException e) {
+      throw new AssertionError(e);
+    }
+  }
 
   private static Class findClassWithField(Class clazz, String fieldName) {
     while (true) {

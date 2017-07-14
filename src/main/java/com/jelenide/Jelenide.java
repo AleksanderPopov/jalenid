@@ -8,65 +8,59 @@ import org.openqa.selenium.support.ui.FluentWait;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import static com.jelenide.Jelement.findBy;
-import static com.jelenide.Jelement.wrap;
-import static com.jelenide.Jelements.findAll;
-import static com.jelenide.Jelements.findAllTyped;
-import static com.jelenide.Jelements.wrapAll;
-import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
-import static com.jelenide.Selectors.byCss;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 
 public class Jelenide {
   public static Jelement $(String css) {
-    return $(byCss(css));
+    return Jelement.get(css);
   }
 
   public static Jelement $(By locator) {
-    return findBy(locator);
+    return Jelement.get(locator);
   }
 
   public static Jelement $(WebElement element) {
-    return wrap(element);
+    return Jelement.wrap(element);
   }
 
   public static <T extends Jelement> T $(String css, Class<T> type) {
-    return $(byCss(css), type);
+    return Jelement.getTyped(css, type);
   }
 
   public static <T extends Jelement> T $(By locator, Class<T> type) {
-    return newInstanceWithFieldValue(type, "locator", locator);
+    return Jelement.getTyped(locator, type);
   }
 
   public static <T extends Jelement> T $(WebElement element, Class<T> type) {
-    return newInstanceWithFieldValue(type, "element", element);
+    return Jelement.wrapTyped(element, type);
   }
 
   public static Jelements<Jelement> $$(String css) {
-    return findAll(byCss(css));
+    return Jelements.getAll(css);
   }
 
   public static Jelements<Jelement> $$(By locator) {
-    return findAll(locator);
+    return Jelements.getAll(locator);
   }
 
   public static Jelements<Jelement> $$(Collection<WebElement> elements) {
-    return wrapAll(elements);
+    return Jelements.wrapAll(elements);
   }
 
   public static <T extends Jelement> Jelements<T> $$(String css, Class<T> type) {
-    return $$(byCss(css), type);
+    return Jelements.getAllTyped(css, type);
   }
 
   public static <T extends Jelement> Jelements<T> $$(By locator, Class<T> type) {
-    return findAllTyped(locator, type);
+    return Jelements.getAllTyped(locator, type);
   }
 
   public static <T extends Jelement> Jelements<T> $$(Collection<WebElement> elements, Class<T> type) {
-    return findAllTyped(elements, type);
+    return Jelements.wrapAllTyped(elements, type);
   }
 
   public static FluentWait<WebDriver> Wait() {
     return new FluentWait<>(getDriver()).withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS).pollingEvery(Configuration.pollingInterval, TimeUnit.MILLISECONDS);
   }
+
 }

@@ -5,11 +5,15 @@ import org.openqa.selenium.*;
 
 import java.util.List;
 
+import static com.jelenide.Jelenide.$;
+import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
+import static com.jelenide.ReflectionTools.setFieldValue;
 import static com.jelenide.Selectors.byCss;
 import static com.jelenide.conditions.JelementConditions.visible;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 
 public class Jelement implements WebElement {
+
   private final By locator;
   private final Jelement contex;
   private final WebElement element;
@@ -24,7 +28,11 @@ public class Jelement implements WebElement {
     this.element = element;
   }
 
-  static Jelement findBy(By locator) {
+  static Jelement get(String css) {
+    return Jelement.get(byCss(css));
+  }
+
+  static Jelement get(By locator) {
     return new Jelement(locator, null, null);
   }
 
@@ -32,7 +40,19 @@ public class Jelement implements WebElement {
     return new Jelement(null, null, element);
   }
 
-  private static Jelement findInContex(By locator, Jelement contex) {
+  static <T extends Jelement> T getTyped(String css, Class<T> type) {
+    return Jelement.getTyped(byCss(css), type);
+  }
+
+  static <T extends Jelement> T getTyped(By locator, Class<T> type) {
+    return newInstanceWithFieldValue(type, "locator", locator);
+  }
+
+  static <T extends Jelement> T wrapTyped(WebElement element, Class<T> type) {
+    return newInstanceWithFieldValue(type, "element", element);
+  }
+
+  private static Jelement getInContex(By locator, Jelement contex) {
     return new Jelement(locator, contex, null);
   }
 
@@ -41,15 +61,35 @@ public class Jelement implements WebElement {
   }
 
   public Jelement find(By locator) {
-    return findInContex(locator, this);
+    return Jelement.getInContex(locator, this);
   }
 
-  public Jelements findAll(String css) {
-    return findAll(byCss(css));
+  public <T extends Jelement> T findTyped(String css, Class<T> type) {
+    return findTyped(byCss(css), type);
   }
 
-  public Jelements findAll(By locator) {
-    return Jelements.findAllInContex(locator, this);
+  public <T extends Jelement> T findTyped(By locator, Class<T> type) {
+    T element = $(locator, type);
+    setFieldValue(type, element, "contex", this);
+    return element;
+  }
+
+  public Jelements<Jelement> findAll(String css) {
+    return Jelements.getAll(byCss(css));
+  }
+
+  public Jelements<Jelement> findAll(By locator) {
+    return Jelements.getAllInContex(locator, this);
+  }
+
+  public <T extends Jelement> Jelements<T> findAllTyped(String css, Class<T> type) {
+    return findAllTyped(byCss(css), type);
+  }
+
+  public <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
+    Jelements<T> elements = Jelements.getAllTyped(locator, type);
+    setFieldValue(type, elements, "contex", this);
+    return elements;
   }
 
   public Jelement shouldHave(JelementCondition condition) {

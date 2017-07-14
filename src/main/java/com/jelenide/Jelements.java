@@ -11,6 +11,7 @@ import java.util.Iterator;
 
 import static com.jelenide.Jelement.wrap;
 import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
+import static com.jelenide.Selectors.byCss;
 import static com.jelenide.conditions.JelementsConditions.sizeGreaterThan;
 import static com.jelenide.webdriver.WebDriverRunner.getDriver;
 import static java.util.stream.Collectors.toList;
@@ -32,11 +33,15 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
     this.type = clazz;
   }
 
-  static <T extends Jelement> Jelements<T> findAll(By locator) {
+  static <T extends Jelement> Jelements<T> getAll(String css) {
+    return getAll(byCss(css));
+  }
+
+  static <T extends Jelement> Jelements<T> getAll(By locator) {
     return new Jelements<>(locator, null, null, null);
   }
 
-  static <T extends Jelement> Jelements<T> findAllInContex(By locator, Jelement contex) {
+  static <T extends Jelement> Jelements<T> getAllInContex(By locator, Jelement contex) {
     return new Jelements<>(locator, contex, null, null);
   }
 
@@ -44,11 +49,15 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
     return new Jelements<>(null, null, null, elements);
   }
 
-  static <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
+  static <T extends Jelement> Jelements<T> getAllTyped(String css, Class<T> type) {
+    return getAllTyped(byCss(css), type);
+  }
+
+  static <T extends Jelement> Jelements<T> getAllTyped(By locator, Class<T> type) {
     return new Jelements<>(locator, null, type, null);
   }
 
-  static <T extends Jelement> Jelements<T> findAllTyped(Collection<WebElement> elements, Class<T> type) {
+  static <T extends Jelement> Jelements<T> wrapAllTyped(Collection<WebElement> elements, Class<T> type) {
     return new Jelements<>(null, null, type, elements);
   }
 
