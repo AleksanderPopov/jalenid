@@ -42,15 +42,15 @@ public class Jelenide {
     return newInstanceWithFieldValue(type, "element", element);
   }
 
-  public static Jelements $$(String css) {
+  public static Jelements<Jelement> $$(String css) {
     return findAll(byCss(css));
   }
 
-  public static Jelements $$(By locator) {
+  public static Jelements<Jelement> $$(By locator) {
     return findAll(locator);
   }
 
-  public static Jelements $$(Collection<WebElement> elements) {
+  public static Jelements<Jelement> $$(Collection<WebElement> elements) {
     return wrapAll(elements);
   }
 
