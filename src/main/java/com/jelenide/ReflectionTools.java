@@ -1,6 +1,7 @@
 package com.jelenide;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 class ReflectionTools {
 
@@ -24,6 +25,12 @@ class ReflectionTools {
     try {
       Field field = findClassWithField(clazz, fieldName).getDeclaredField(fieldName);
       field.setAccessible(true);
+
+      Field modifiers = field.getClass().getDeclaredField("modifiers");
+      modifiers.setAccessible(true);
+      modifiers.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+
+
       field.set(instance, fieldValue);
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new AssertionError(e);

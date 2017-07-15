@@ -57,6 +57,10 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
     return new Jelements<>(locator, null, type, null);
   }
 
+  static <T extends Jelement> Jelements<T> getAllTypedInContex(By locator, Jelement contex, Class<T> type) {
+    return new Jelements<>(locator, contex, type, null);
+  }
+
   static <T extends Jelement> Jelements<T> wrapAllTyped(Collection<WebElement> elements, Class<T> type) {
     return new Jelements<>(null, null, type, elements);
   }

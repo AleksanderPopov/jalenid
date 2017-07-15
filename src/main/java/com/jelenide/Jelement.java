@@ -5,7 +5,6 @@ import org.openqa.selenium.*;
 
 import java.util.List;
 
-import static com.jelenide.Jelenide.$;
 import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
 import static com.jelenide.ReflectionTools.setFieldValue;
 import static com.jelenide.Selectors.byCss;
@@ -69,7 +68,7 @@ public class Jelement implements WebElement {
   }
 
   public <T extends Jelement> T findTyped(By locator, Class<T> type) {
-    T element = $(locator, type);
+    T element = getTyped(locator, type);
     setFieldValue(type, element, "contex", this);
     return element;
   }
@@ -87,9 +86,7 @@ public class Jelement implements WebElement {
   }
 
   public <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
-    Jelements<T> elements = Jelements.getAllTyped(locator, type);
-    setFieldValue(type, elements, "contex", this);
-    return elements;
+    return Jelements.getAllTyped(locator, type);
   }
 
   public Jelement shouldHave(JelementCondition condition) {
