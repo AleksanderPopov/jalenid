@@ -12,12 +12,18 @@ public interface Jelement extends SearchContext {
 
 
   Jelements findAll(By locator);
+
   Jelement find(By locator);
 
   Jelement should(JelementCondition condition);
+
   Jelement val(String value);
+
   Jelement pressEnter();
+
   void click();
+
+  <T extends Jelement> T as(Class<T> clazz);
 
   WebElement toWebElement();
 

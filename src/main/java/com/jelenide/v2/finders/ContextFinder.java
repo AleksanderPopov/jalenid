@@ -12,20 +12,25 @@ import java.util.List;
 public class ContextFinder implements Finder {
 
   private final By locator;
-  private final SearchContext contex;
+  private final SearchContext context;
+
+  public ContextFinder(ContextFinder finder) {
+    this.locator = finder.locator;
+    this.context = finder.context;
+  }
 
   public ContextFinder(By locator, SearchContext context) {
     this.locator = locator;
-    this.contex = context;
+    this.context = context;
   }
 
   @Override
   public WebElement find() {
-    return contex.findElement(locator);
+    return context.findElement(locator);
   }
 
   @Override
   public List<WebElement> findAll() {
-    return contex.findElements(locator);
+    return context.findElements(locator);
   }
 }

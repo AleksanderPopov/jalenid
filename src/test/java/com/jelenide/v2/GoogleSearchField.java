@@ -1,12 +1,17 @@
-//package com.jelenide.v2;
-//
-//import com.jelenide.v2.WebDriverJelement;
-//
-//import static com.jelenide.v2.conditions.JelementConditions.visible;
-//
-//public class GoogleSearchField extends WebDriverJelement {
-//  public GoogleSearchField searchFor(String text) {
-//    this.shouldBe(visible()).val(text).pressEnter();
-//    return this;
-//  }
-//}
+package com.jelenide.v2;
+
+
+import com.jelenide.v2.conditions.Be;
+import com.jelenide.v2.finders.Finder;
+import com.jelenide.v2.jelements.AbstractJelement;
+
+public class GoogleSearchField extends AbstractJelement {
+  public GoogleSearchField(Finder finder) {
+    super(finder);
+  }
+
+  public GoogleSearchField searchFor(String text) {
+    this.should(Be.visible()).val(text).pressEnter();
+    return this;
+  }
+}

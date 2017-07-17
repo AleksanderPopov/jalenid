@@ -1,6 +1,7 @@
 package com.jelenide.v2.jelements;
 
 import com.jelenide.v2.Configuration;
+import com.jelenide.v2.ReflectionTools;
 import com.jelenide.v2.conditions.Be;
 import com.jelenide.v2.conditions.JelementCondition;
 import com.jelenide.v2.finders.ContextFinder;
@@ -56,6 +57,11 @@ public class AbstractJelement implements Jelement {
   public void click() {
     waitFor(Be.visible());
     toWebElement().click();
+  }
+
+  @Override
+  public <T extends Jelement> T as(Class<T> clazz) {
+    return ReflectionTools.newInstance(clazz, Finder.class, finder);
   }
 
   @Override

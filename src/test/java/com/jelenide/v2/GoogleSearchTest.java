@@ -42,6 +42,19 @@ public class GoogleSearchTest {
 
     $("#lst-ib").val("Selenium automates browsers").pressEnter();
 
+    $$(".g .r").filter(visible()).should(Have.size(10))
+            .first().should(Have.text("Selenium - Web Browser Automation"))
+            .find(byCss("a")).click();
+
+    Wait().until(urlToBe("http://www.seleniumhq.org/"));
+
+  }
+
+  @Test
+  public void typedJelementsTest() {
+
+    $("#lst-ib").as(GoogleSearchField.class).searchFor("Selenium automates browsers");
+
     $$(".g .r").as(GoogleSearchResult.class)
             .filter(visible()).should(Have.size(10))
             .first().shouldHaveTitle("Selenium - Web Browser Automation").clickLink();
@@ -50,68 +63,4 @@ public class GoogleSearchTest {
 
   }
 
-//  @Test
-//  public void usualJelementsWithFindTest() {
-//
-//    $("#gs_lc0").webelement("#lst-ib").val("Selenium automates browsers").pressEnter();
-//
-//    $$(".g .r").filter(visible()).shouldHave(size(10))
-//            .first().shouldHave(text("Selenium - Web Browser Automation"))
-//            .webelement("a").click();
-//
-//    Wait().until(urlToBe("http://www.seleniumhq.org/"));
-//
-//  }
-//
-//  @Test
-//  public void usualJelementsWithFindAllTest() {
-//
-//    $("#lst-ib").val("Selenium automates browsers").pressEnter();
-//
-//    $(".srg").findAllRaw(".g .r").filter(visible()).shouldHave(size(10))
-//            .first().shouldHave(text("Selenium - Web Browser Automation"))
-//            .webelement("a").click();
-//
-//    Wait().until(urlToBe("http://www.seleniumhq.org/"));
-//
-//  }
-//
-//  @Test
-//  public void typedJelementsTest() {
-//
-//    $("#lst-ib", GoogleSearchField.class).searchFor("Selenium automates browsers");
-//
-//    $$(".g .r", GoogleSearchResult.class).filter(visible()).shouldHave(size(10))
-//            .first().shouldHaveTitle("Selenium - Web Browser Automation")
-//            .clickLink();
-//
-//    Wait().until(urlToBe("http://www.seleniumhq.org/"));
-//
-//  }
-//
-//  @Test
-//  public void usualJelementsWithFindTypedTest() {
-//
-//    $("#gs_lc0").findTyped("#lst-ib", GoogleSearchField.class).searchFor("Selenium automates browsers");
-//
-//    $$(".g .r").filter(visible()).shouldHave(size(10))
-//            .first().shouldHave(text("Selenium - Web Browser Automation"))
-//            .webelement("a").click();
-//
-//    Wait().until(urlToBe("http://www.seleniumhq.org/"));
-//
-//  }
-//
-//  @Test
-//  public void usualJelementsWithFindAllTypedTest() {
-//
-//    $("#lst-ib").val("Selenium automates browsers").pressEnter();
-//
-//    $(".srg").findAllTyped(".g .r", GoogleSearchResult.class).filter(visible()).shouldHave(size(10))
-//            .first().shouldHaveTitle("Selenium - Web Browser Automation")
-//            .clickLink();
-//
-//    Wait().until(urlToBe("http://www.seleniumhq.org/"));
-//
-//  }
 }
