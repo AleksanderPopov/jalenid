@@ -1,7 +1,7 @@
-package com.jelenide.conditions;
+package com.jelenide.v1.conditions;
 
-import com.jelenide.Jelement;
-import com.jelenide.Jelements;
+import com.jelenide.v1.Jelement;
+import com.jelenide.v1.Jelements;
 
 /**
  * Created by Alex on 7/9/2017.

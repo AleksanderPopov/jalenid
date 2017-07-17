@@ -1,6 +1,6 @@
-package com.jelenide;
+package com.jelenide.v1;
 
-import com.jelenide.conditions.JelementConditions;
+import com.jelenide.v1.conditions.JelementConditions;
 
 public class GoogleSearchResult extends Jelement {
 

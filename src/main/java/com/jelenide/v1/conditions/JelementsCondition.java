@@ -1,8 +1,8 @@
-package com.jelenide.conditions;
+package com.jelenide.v1.conditions;
 
 
-import com.jelenide.Jelement;
-import com.jelenide.Jelements;
+import com.jelenide.v1.Jelement;
+import com.jelenide.v1.Jelements;
 
 import java.util.function.Function;
 

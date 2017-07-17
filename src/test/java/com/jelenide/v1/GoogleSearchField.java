@@ -1,6 +1,6 @@
-package com.jelenide;
+package com.jelenide.v1;
 
-import static com.jelenide.conditions.JelementConditions.visible;
+import static com.jelenide.v1.conditions.JelementConditions.visible;
 
 public class GoogleSearchField extends Jelement {
   public GoogleSearchField searchFor(String text) {

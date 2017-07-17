@@ -1,4 +1,4 @@
-package com.jelenide;
+package com.jelenide.v1;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -6,13 +6,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import static com.jelenide.Jelenide.*;
-import static com.jelenide.Selectors.byCss;
-import static com.jelenide.conditions.JelementConditions.text;
-import static com.jelenide.conditions.JelementConditions.visible;
-import static com.jelenide.conditions.JelementsConditions.size;
-import static com.jelenide.webdriver.WebDriverRunner.getDriver;
-import static com.jelenide.webdriver.WebDriverRunner.setDriver;
+import static com.jelenide.v1.Jelenide.*;
+import static com.jelenide.v1.conditions.JelementConditions.text;
+import static com.jelenide.v1.conditions.JelementConditions.visible;
+import static com.jelenide.v1.conditions.JelementsConditions.size;
+import static com.jelenide.v1.webdriver.WebDriverRunner.getDriver;
+import static com.jelenide.v1.webdriver.WebDriverRunner.setDriver;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 
 public class GoogleSearchTest {

@@ -1,4 +1,4 @@
-package com.jelenide.conditions;
+package com.jelenide.v1.conditions;
 
 
 import org.openqa.selenium.WebElement;

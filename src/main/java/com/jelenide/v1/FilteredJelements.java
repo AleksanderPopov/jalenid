@@ -1,6 +1,6 @@
-package com.jelenide;
+package com.jelenide.v1;
 
-import com.jelenide.conditions.JelementCondition;
+import com.jelenide.v1.conditions.JelementCondition;
 import org.openqa.selenium.WebElement;
 
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.jelenide;
+package com.jelenide.v1;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import static com.jelenide.webdriver.WebDriverRunner.getDriver;
+import static com.jelenide.v1.webdriver.WebDriverRunner.getDriver;
 
 public class Jelenide {
   public static Jelement $(String css) {

@@ -1,4 +1,4 @@
-package com.jelenide;
+package com.jelenide.v1;
 
 import org.openqa.selenium.By;
 

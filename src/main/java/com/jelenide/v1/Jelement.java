@@ -1,15 +1,12 @@
-package com.jelenide;
+package com.jelenide.v1;
 
-import com.jelenide.conditions.JelementCondition;
+import com.jelenide.v1.conditions.JelementCondition;
 import org.openqa.selenium.*;
 
 import java.util.List;
 
-import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
-import static com.jelenide.ReflectionTools.setFieldValue;
-import static com.jelenide.Selectors.byCss;
-import static com.jelenide.conditions.JelementConditions.visible;
-import static com.jelenide.webdriver.WebDriverRunner.getDriver;
+import static com.jelenide.v1.conditions.JelementConditions.visible;
+import static com.jelenide.v1.webdriver.WebDriverRunner.getDriver;
 
 public class Jelement implements WebElement {
 
@@ -28,7 +25,7 @@ public class Jelement implements WebElement {
   }
 
   static Jelement get(String css) {
-    return Jelement.get(byCss(css));
+    return Jelement.get(Selectors.byCss(css));
   }
 
   static Jelement get(By locator) {
@@ -40,15 +37,15 @@ public class Jelement implements WebElement {
   }
 
   static <T extends Jelement> T getTyped(String css, Class<T> type) {
-    return Jelement.getTyped(byCss(css), type);
+    return Jelement.getTyped(Selectors.byCss(css), type);
   }
 
   static <T extends Jelement> T getTyped(By locator, Class<T> type) {
-    return newInstanceWithFieldValue(type, "locator", locator);
+    return ReflectionTools.newInstanceWithFieldValue(type, "locator", locator);
   }
 
   static <T extends Jelement> T wrapTyped(WebElement element, Class<T> type) {
-    return newInstanceWithFieldValue(type, "element", element);
+    return ReflectionTools.newInstanceWithFieldValue(type, "element", element);
   }
 
   private static Jelement getInContex(By locator, Jelement contex) {
@@ -56,7 +53,7 @@ public class Jelement implements WebElement {
   }
 
   public Jelement find(String css) {
-    return find(byCss(css));
+    return find(Selectors.byCss(css));
   }
 
   public Jelement find(By locator) {
@@ -64,17 +61,17 @@ public class Jelement implements WebElement {
   }
 
   public <T extends Jelement> T findTyped(String css, Class<T> type) {
-    return findTyped(byCss(css), type);
+    return findTyped(Selectors.byCss(css), type);
   }
 
   public <T extends Jelement> T findTyped(By locator, Class<T> type) {
     T element = getTyped(locator, type);
-    setFieldValue(type, element, "contex", this);
+    ReflectionTools.setFieldValue(type, element, "contex", this);
     return element;
   }
 
   public Jelements<Jelement> findAll(String css) {
-    return Jelements.getAll(byCss(css));
+    return Jelements.getAll(Selectors.byCss(css));
   }
 
   public Jelements<Jelement> findAll(By locator) {
@@ -82,19 +79,19 @@ public class Jelement implements WebElement {
   }
 
   public <T extends Jelement> Jelements<T> findAllTyped(String css, Class<T> type) {
-    return findAllTyped(byCss(css), type);
+    return findAllTyped(Selectors.byCss(css), type);
   }
 
   public <T extends Jelement> Jelements<T> findAllTyped(By locator, Class<T> type) {
     return Jelements.getAllTyped(locator, type);
   }
 
-  public Jelement shouldHave(JelementCondition condition) {
-    return wrap(waitFor(condition));
-  }
-
   public Jelement shouldBe(JelementCondition condition) {
     return shouldHave(condition);
+  }
+
+  public Jelement shouldHave(JelementCondition condition) {
+    return wrap(waitFor(condition));
   }
 
   public Jelement val(String value) {
@@ -113,7 +110,7 @@ public class Jelement implements WebElement {
             contex != null ? contex.findElement(locator) : getDriver().findElement(locator);
   }
 
-  private WebElement waitFor(JelementCondition condition) {
+  private WebElement waitFor(JelementCondition condition) { //TODO change condition to operate on WebDriverJelement's
 
     long endTime = System.currentTimeMillis() + Configuration.timeout;
 

@@ -1,7 +1,7 @@
-package com.jelenide;
+package com.jelenide.v1;
 
-import com.jelenide.conditions.JelementCondition;
-import com.jelenide.conditions.JelementsCondition;
+import com.jelenide.v1.conditions.JelementCondition;
+import com.jelenide.v1.conditions.JelementsCondition;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -9,11 +9,8 @@ import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static com.jelenide.Jelement.wrap;
-import static com.jelenide.ReflectionTools.newInstanceWithFieldValue;
-import static com.jelenide.Selectors.byCss;
-import static com.jelenide.conditions.JelementsConditions.sizeGreaterThan;
-import static com.jelenide.webdriver.WebDriverRunner.getDriver;
+import static com.jelenide.v1.conditions.JelementsConditions.sizeGreaterThan;
+import static com.jelenide.v1.webdriver.WebDriverRunner.getDriver;
 import static java.util.stream.Collectors.toList;
 
 public class Jelements<T extends Jelement> extends AbstractCollection<T> {
@@ -34,7 +31,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   }
 
   static <T extends Jelement> Jelements<T> getAll(String css) {
-    return getAll(byCss(css));
+    return getAll(Selectors.byCss(css));
   }
 
   static <T extends Jelement> Jelements<T> getAll(By locator) {
@@ -50,7 +47,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   }
 
   static <T extends Jelement> Jelements<T> getAllTyped(String css, Class<T> type) {
-    return getAllTyped(byCss(css), type);
+    return getAllTyped(Selectors.byCss(css), type);
   }
 
   static <T extends Jelement> Jelements<T> getAllTyped(By locator, Class<T> type) {
@@ -80,7 +77,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
   public T get(int index) {
     return this.shouldHave(sizeGreaterThan(index + 1))
             .stream()
-            .map(jelement -> type != null ? newInstanceWithFieldValue(type, "element", jelement) : jelement)
+            .map(jelement -> type != null ? ReflectionTools.newInstanceWithFieldValue(type, "element", jelement) : jelement)
             .collect(toList())
             .get(index);
   }
@@ -104,7 +101,7 @@ public class Jelements<T extends Jelement> extends AbstractCollection<T> {
 
   @Override
   public Iterator<T> iterator() {
-    return find().stream().map(we -> (T) wrap(we)).collect(toList()).iterator();
+    return find().stream().map(we -> (T) Jelement.wrap(we)).collect(toList()).iterator();
   }
 
   @Override

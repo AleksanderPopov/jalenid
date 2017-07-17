@@ -1,4 +1,4 @@
-package com.jelenide.webdriver;
+package com.jelenide.v1.webdriver;
 
 import org.openqa.selenium.WebDriver;
 
