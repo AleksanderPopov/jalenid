@@ -32,10 +32,10 @@ public class Jelenide {
     return new AbstractJelements(new ContextFinder(locator, getDriver()));
   }
 
-  public static FluentWait<WebDriver> Wait() {
+  public static FluentWait<? extends WebDriver> Wait() {
     return new FluentWait<>(getDriver())
-            .withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS)
-            .pollingEvery(100, TimeUnit.MILLISECONDS);
+            .withTimeout(getDriver().timeout, TimeUnit.MILLISECONDS)
+            .pollingEvery(getDriver().pollingInterval, TimeUnit.MILLISECONDS);
   }
 
 }
