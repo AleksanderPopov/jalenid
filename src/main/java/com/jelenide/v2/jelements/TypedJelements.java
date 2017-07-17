@@ -1,5 +1,6 @@
 package com.jelenide.v2.jelements;
 
+import com.jelenide.v2.ReflectionTools;
 import com.jelenide.v2.Configuration;
 import com.jelenide.v2.conditions.Have;
 import com.jelenide.v2.conditions.JelementCondition;
@@ -14,33 +15,35 @@ import java.util.List;
 /**
  * Created by Alex on 7/17/2017.
  */
-public class AbstractJelements implements Jelements<Jelement> {
+public class TypedJelements<T extends Jelement> implements Jelements<T> {
 
+  private final Class<T> type;
   private final Finder finder;
 
-  public AbstractJelements(Finder finder) {
+  public TypedJelements(Finder finder, Class<T> type) {
     this.finder = finder;
+    this.type = type;
   }
 
   @Override
-  public Jelements<Jelement> should(JelementsCondition<Jelement> condition) {
+  public Jelements<T> should(JelementsCondition<T> condition) {
     waitFor(condition);
     return this;
   }
 
   @Override
-  public Jelements<Jelement> filter(JelementCondition condition) {
-    return new AbstractJelements(new ConditionalFinder<>(condition, this));
+  public Jelements<T> filter(JelementCondition condition) {
+    return new TypedJelements<>(new ConditionalFinder<>(condition, this), type);
   }
 
   @Override
-  public Jelement get(int index) {
+  public T get(int index) {
     this.should(Have.sizeGreaterThanOrEqual(index + 1));
-    return new AbstractJelement(new ElementFinder(finder.findAll().get(index)));
+    return ReflectionTools.newInstance(type, Finder.class, new ElementFinder(finder.findAll().get(index)));
   }
 
   @Override
-  public Jelement first() {
+  public T first() {
     return get(0);
   }
 
@@ -54,7 +57,7 @@ public class AbstractJelements implements Jelements<Jelement> {
     return finder.findAll();
   }
 
-  private void waitFor(JelementsCondition<Jelement> condition) {
+  private void waitFor(JelementsCondition<T> condition) {
 
     long endTime = System.currentTimeMillis() + Configuration.timeout;
 
@@ -65,5 +68,4 @@ public class AbstractJelements implements Jelements<Jelement> {
 
     throw new AssertionError("Jelements does not meet the condition");
   }
-
 }

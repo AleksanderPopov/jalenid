@@ -8,13 +8,15 @@ import java.util.List;
 
 public interface Jelements<T extends Jelement> {
 
-  Jelements should(JelementsCondition<T> condition);
+  Jelements<T> should(JelementsCondition<T> condition);
 
   Jelements<T> filter(JelementCondition condition);
 
   T get(int index);
 
   T first();
+
+  <S extends Jelement> Jelements<S> as(Class<S> clazz);
 
   List<WebElement> toWebElements();
 }

@@ -42,9 +42,9 @@ public class GoogleSearchTest {
 
     $("#lst-ib").val("Selenium automates browsers").pressEnter();
 
-    $$(".g .r").filter(visible()).should(Have.size(10))
-            .first().should(Have.text("Selenium - Web Browser Automation"))
-            .find(byCss("a")).click();
+    $$(".g .r").as(GoogleSearchResult.class)
+            .filter(visible()).should(Have.size(10))
+            .first().shouldHaveTitle("Selenium - Web Browser Automation").clickLink();
 
     Wait().until(urlToBe("http://www.seleniumhq.org/"));
 
