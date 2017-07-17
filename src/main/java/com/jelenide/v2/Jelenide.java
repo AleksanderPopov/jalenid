@@ -1,5 +1,6 @@
 package com.jelenide.v2;
 
+import com.jelenide.v2.finders.ContextFinder;
 import com.jelenide.v2.jelements.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -23,11 +24,11 @@ public class Jelenide {
     return new AbstractJelement(new ContextFinder(locator, getDriver()));
   }
 
-  public static Jelements $$(String css) {
+  public static Jelements<Jelement> $$(String css) {
     return $$(byCss(css));
   }
 
-  public static Jelements $$(By locator) {
+  public static Jelements<Jelement> $$(By locator) {
     return new AbstractJelements(new ContextFinder(locator, getDriver()));
   }
 

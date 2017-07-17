@@ -9,19 +9,19 @@ import org.openqa.selenium.WebDriverException;
  */
 public class Have {
 
-  public static JelementsCondition size(int size) {
-    return new JelementsCondition() {
+  public static <T extends Jelement> JelementsCondition<T> size(int size) {
+    return new JelementsCondition<T>() {
       @Override
-      public Jelements apply(Jelements jelements) {
+      public Jelements<T> apply(Jelements<T> jelements) {
         return jelements.toWebElements().size() == size ? jelements : null;
       }
     };
   }
 
-  public static JelementsCondition sizeGreaterThanOrEqual(int size) {
-    return new JelementsCondition() {
+  public static <T extends Jelement> JelementsCondition<T> sizeGreaterThanOrEqual(int size) {
+    return new JelementsCondition<T>() {
       @Override
-      public Jelements apply(Jelements jelements) {
+      public Jelements<T> apply(Jelements<T> jelements) {
         return jelements.toWebElements().size() >= size ? jelements : null;
       }
     };

@@ -6,15 +6,15 @@ import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public interface Jelements {
+public interface Jelements<T extends Jelement> {
 
-  Jelements should(JelementsCondition condition);
+  Jelements should(JelementsCondition<T> condition);
 
-  Jelements filter(JelementCondition condition);
+  Jelements<T> filter(JelementCondition condition);
 
-  Jelement get(int index);
+  T get(int index);
 
-  Jelement first();
+  T first();
 
   List<WebElement> toWebElements();
 }

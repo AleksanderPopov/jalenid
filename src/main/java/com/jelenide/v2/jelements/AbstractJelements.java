@@ -4,6 +4,9 @@ import com.jelenide.v2.Configuration;
 import com.jelenide.v2.conditions.Have;
 import com.jelenide.v2.conditions.JelementCondition;
 import com.jelenide.v2.conditions.JelementsCondition;
+import com.jelenide.v2.finders.ConditionalFinder;
+import com.jelenide.v2.finders.ElementFinder;
+import com.jelenide.v2.finders.Finder;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -11,7 +14,7 @@ import java.util.List;
 /**
  * Created by Alex on 7/17/2017.
  */
-public class AbstractJelements implements Jelements {
+public class AbstractJelements implements Jelements<Jelement> {
 
   private final Finder finder;
 
@@ -20,13 +23,13 @@ public class AbstractJelements implements Jelements {
   }
 
   @Override
-  public Jelements should(JelementsCondition condition) {
+  public Jelements<Jelement> should(JelementsCondition<Jelement> condition) {
     waitFor(condition);
     return this;
   }
 
   @Override
-  public Jelements filter(JelementCondition condition) {
+  public Jelements<Jelement> filter(JelementCondition condition) {
     return new AbstractJelements(new ConditionalFinder(condition, this));
   }
 

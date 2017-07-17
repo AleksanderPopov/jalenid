@@ -3,6 +3,8 @@ package com.jelenide.v2.jelements;
 import com.jelenide.v2.Configuration;
 import com.jelenide.v2.conditions.Be;
 import com.jelenide.v2.conditions.JelementCondition;
+import com.jelenide.v2.finders.ContextFinder;
+import com.jelenide.v2.finders.Finder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;

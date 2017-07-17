@@ -1,4 +1,4 @@
-package com.jelenide.v2.jelements;
+package com.jelenide.v2.finders;
 
 import org.openqa.selenium.WebElement;
 
