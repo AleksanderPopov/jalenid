@@ -1,13 +1,14 @@
 package com.jelenide.v2.webdriver;
 
-import com.jelenide.v2.Configuration;
-import com.jelenide.v2.Jelenide;
+import com.jelenide.v2.JelenideWait;
+import com.jelenide.v2.conditions.Be;
 import com.jelenide.v2.finders.ContextFinder;
 import com.jelenide.v2.jelements.AbstractJelement;
 import com.jelenide.v2.jelements.AbstractJelements;
 import com.jelenide.v2.jelements.Jelement;
 import com.jelenide.v2.jelements.Jelements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -24,15 +25,36 @@ import static com.jelenide.v2.Selectors.byCss;
 public class JelenideDriver implements WebDriver {
 
   private final WebDriver driver;
-  public int timeout = 4_000;
-  public int pollingInterval = 100;
+  private final JelenideWait wait;
+  public final boolean takeScreenshot;
+
 
   public JelenideDriver(WebDriver driver) {
+    this(driver, 4_000, 100, false);
+  }
+
+  public JelenideDriver(WebDriver driver, Capabilities capabilities) {
+    this(
+            driver,
+            capabilities.getCapability("timeout") != null ? Long.valueOf(capabilities.getCapability("timeout").toString()) :  4_000,
+            capabilities.getCapability("pollingInterval") != null ? Long.valueOf(capabilities.getCapability("pollingInterval").toString()) :  100,
+            capabilities.getCapability("takeScreenshot") != null ? Boolean.valueOf(capabilities.getCapability("takeScreenshot").toString()) : false
+    );
+  }
+
+  public JelenideDriver(WebDriver driver, long timeout, long pollingInterval, boolean takeScreenshot) {
     this.driver = driver;
+    this.takeScreenshot = takeScreenshot;
+    this.wait = new JelenideWait(new FluentWait<>(driver).withTimeout(timeout, TimeUnit.MILLISECONDS).pollingEvery(pollingInterval, TimeUnit.MILLISECONDS));
   }
 
   public JelenideDriver open(String url) {
     driver.get(url);
+    return this;
+  }
+
+  public JelenideDriver maximize() {
+    this.driver.manage().window().maximize();
     return this;
   }
 
@@ -41,7 +63,7 @@ public class JelenideDriver implements WebDriver {
   }
 
   public Jelement $(By locator) {
-    return new AbstractJelement(new ContextFinder(locator, driver));
+    return new AbstractJelement(new ContextFinder(locator, driver), this);
   }
 
   public Jelements<Jelement> $$(String css) {
@@ -49,18 +71,17 @@ public class JelenideDriver implements WebDriver {
   }
 
   public Jelements<Jelement> $$(By locator) {
-    return new AbstractJelements(new ContextFinder(locator, driver));
+    return new AbstractJelements(new ContextFinder(locator, driver), this);
   }
 
-  public FluentWait<WebDriver> Wait() {
-    return new FluentWait<>(driver)
-            .withTimeout(Configuration.timeout, TimeUnit.MILLISECONDS)
-            .pollingEvery(100, TimeUnit.MILLISECONDS);
+  public JelenideWait Wait() {
+    return wait;
   }
 
-  public JelenideDriver maximize() {
-    this.driver.manage().window().maximize();
-    return this;
+  public static void main(String[] args) {
+
+    JelenideDriver driver = new JelenideDriver(null);
+    driver.Wait().until(driver.$(""), Be.visible());
   }
 
   @Override

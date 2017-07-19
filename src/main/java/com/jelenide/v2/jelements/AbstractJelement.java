@@ -6,6 +6,7 @@ import com.jelenide.v2.conditions.Be;
 import com.jelenide.v2.conditions.JelementCondition;
 import com.jelenide.v2.finders.ContextFinder;
 import com.jelenide.v2.finders.Finder;
+import com.jelenide.v2.webdriver.JelenideDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
@@ -18,9 +19,11 @@ import java.util.List;
 public class AbstractJelement implements Jelement {
 
   private final Finder finder;
+  private final JelenideDriver driver;
 
-  public AbstractJelement(Finder finder) {
+  public AbstractJelement(Finder finder, JelenideDriver driver) {
     this.finder = finder;
+    this.driver = driver;
   }
 
   @Override
@@ -30,17 +33,17 @@ public class AbstractJelement implements Jelement {
 
   @Override
   public Jelement find(By locator) {
-    return new AbstractJelement(new ContextFinder(locator, this));
+    return new AbstractJelement(new ContextFinder(locator, this), driver);
   }
 
   @Override
   public Jelements findAll(By locator) {
-    return new AbstractJelements(new ContextFinder(locator, this));
+    return new AbstractJelements(new ContextFinder(locator, this), driver);
   }
 
   @Override
   public Jelement val(String text) {
-    waitFor(Be.visible());
+    should(Be.visible());
     toWebElement().clear();
     toWebElement().sendKeys(text);
     return this;
@@ -48,14 +51,14 @@ public class AbstractJelement implements Jelement {
 
   @Override
   public Jelement pressEnter() {
-    waitFor(Be.visible());
+    should(Be.visible());
     toWebElement().sendKeys(Keys.ENTER);
     return this;
   }
 
   @Override
   public void click() {
-    waitFor(Be.visible());
+    should(Be.visible());
     toWebElement().click();
   }
 
@@ -66,7 +69,7 @@ public class AbstractJelement implements Jelement {
 
   @Override
   public Jelement should(JelementCondition condition) {
-    waitFor(condition);
+    driver.Wait().until(this, condition);
     return this;
   }
 

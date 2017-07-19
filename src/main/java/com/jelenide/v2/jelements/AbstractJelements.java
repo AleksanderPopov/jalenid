@@ -1,12 +1,12 @@
 package com.jelenide.v2.jelements;
 
-import com.jelenide.v2.Configuration;
 import com.jelenide.v2.conditions.Have;
 import com.jelenide.v2.conditions.JelementCondition;
 import com.jelenide.v2.conditions.JelementsCondition;
 import com.jelenide.v2.finders.ConditionalFinder;
 import com.jelenide.v2.finders.ElementFinder;
 import com.jelenide.v2.finders.Finder;
+import com.jelenide.v2.webdriver.JelenideDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -17,26 +17,28 @@ import java.util.List;
 public class AbstractJelements implements Jelements<Jelement> {
 
   private final Finder finder;
+  private final JelenideDriver driver;
 
-  public AbstractJelements(Finder finder) {
+  public AbstractJelements(Finder finder, JelenideDriver driver) {
     this.finder = finder;
+    this.driver = driver;
   }
 
   @Override
   public Jelements<Jelement> should(JelementsCondition<Jelement> condition) {
-    waitFor(condition);
+    driver.Wait().until(this, condition);
     return this;
   }
 
   @Override
   public Jelements<Jelement> filter(JelementCondition condition) {
-    return new AbstractJelements(new ConditionalFinder<>(condition, this));
+    return new AbstractJelements(new ConditionalFinder<>(condition, this, driver), driver);
   }
 
   @Override
   public Jelement get(int index) {
     this.should(Have.sizeGreaterThanOrEqual(index + 1));
-    return new AbstractJelement(new ElementFinder(finder.findAll().get(index)));
+    return new AbstractJelement(new ElementFinder(finder.findAll().get(index)), driver);
   }
 
   @Override
@@ -46,7 +48,7 @@ public class AbstractJelements implements Jelements<Jelement> {
 
   @Override
   public <S extends Jelement> Jelements<S> as(Class<S> clazz) {
-    return new TypedJelements<>(finder, clazz);
+    return new TypedJelements<>(finder, driver, clazz);
   }
 
   @Override
@@ -54,16 +56,5 @@ public class AbstractJelements implements Jelements<Jelement> {
     return finder.findAll();
   }
 
-  private void waitFor(JelementsCondition<Jelement> condition) {
-
-    long endTime = System.currentTimeMillis() + Configuration.timeout;
-
-    do {
-      if (condition.apply(this) != null)
-        return;
-    } while (System.currentTimeMillis() <= endTime);
-
-    throw new AssertionError("Jelements does not meet the condition");
-  }
 
 }

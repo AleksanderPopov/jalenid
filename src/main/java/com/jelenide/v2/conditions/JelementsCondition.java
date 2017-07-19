@@ -9,4 +9,6 @@ import java.util.function.Function;
  * Created by Alex on 7/17/2017.
  */
 public interface JelementsCondition<T extends Jelement> extends Function<Jelements<T>, Jelements<T>> {
+
+  String errorMessage();
 }

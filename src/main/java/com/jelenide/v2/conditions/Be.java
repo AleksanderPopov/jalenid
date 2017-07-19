@@ -12,6 +12,11 @@ public class Be {
   public static JelementCondition visible() {
     return new JelementCondition() {
       @Override
+      public String errorMessage() {
+        return "custom error message";
+      }
+
+      @Override
       public Jelement apply(Jelement jelement) {
         try {
           return jelement.toWebElement().isDisplayed() ? jelement : null;
@@ -24,6 +29,11 @@ public class Be {
 
   public static JelementCondition hidden() {
     return new JelementCondition() {
+      @Override
+      public String errorMessage() {
+        return "custom error message";
+      }
+
       @Override
       public Jelement apply(Jelement jelement) {
         try {

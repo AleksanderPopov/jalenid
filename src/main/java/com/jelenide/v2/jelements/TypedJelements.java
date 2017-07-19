@@ -8,6 +8,7 @@ import com.jelenide.v2.conditions.JelementsCondition;
 import com.jelenide.v2.finders.ConditionalFinder;
 import com.jelenide.v2.finders.ElementFinder;
 import com.jelenide.v2.finders.Finder;
+import com.jelenide.v2.webdriver.JelenideDriver;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
@@ -17,23 +18,25 @@ import java.util.List;
  */
 public class TypedJelements<T extends Jelement> implements Jelements<T> {
 
+  private final JelenideDriver driver;
   private final Class<T> type;
   private final Finder finder;
 
-  public TypedJelements(Finder finder, Class<T> type) {
+  public TypedJelements(Finder finder, JelenideDriver driver, Class<T> type) {
     this.finder = finder;
+    this.driver = driver;
     this.type = type;
   }
 
   @Override
   public Jelements<T> should(JelementsCondition<T> condition) {
-    waitFor(condition);
+    driver.Wait().until(this, condition);
     return this;
   }
 
   @Override
   public Jelements<T> filter(JelementCondition condition) {
-    return new TypedJelements<>(new ConditionalFinder<>(condition, this), type);
+    return new TypedJelements<>(new ConditionalFinder<>(condition, this, driver), driver, type);
   }
 
   @Override
@@ -49,7 +52,7 @@ public class TypedJelements<T extends Jelement> implements Jelements<T> {
 
   @Override
   public <S extends Jelement> Jelements<S> as(Class<S> clazz) {
-    return new TypedJelements<>(finder, clazz);
+    return new TypedJelements<>(finder, driver, clazz);
   }
 
   @Override

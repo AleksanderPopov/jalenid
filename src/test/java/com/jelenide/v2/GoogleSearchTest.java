@@ -1,18 +1,15 @@
 package com.jelenide.v2;
 
+import com.jelenide.v2.conditions.Be;
 import com.jelenide.v2.conditions.Have;
 import com.jelenide.v2.webdriver.JelenideDriver;
-import com.jelenide.v2.webdriver.WebDriverRunner;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 
 import static com.jelenide.v2.Jelenide.$;
 import static com.jelenide.v2.Jelenide.$$;
-import static com.jelenide.v2.Jelenide.Wait;
 import static com.jelenide.v2.Selectors.byCss;
 import static com.jelenide.v2.conditions.Be.visible;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
@@ -47,7 +44,7 @@ public class GoogleSearchTest {
 //
 //    driver.$$(".g .r").filter(visible()).should(Have.size(10))
 //            .first().should(Have.text("Selenium - Web Browser Automation"))
-//            .find(byCss("a")).click();
+//            .$(byCss("a")).click();
 //
 //    driver.Wait().until(urlToBe("http://www.seleniumhq.org/"));
 //
@@ -68,17 +65,23 @@ public class GoogleSearchTest {
 
   @Test
   public void twoBrowsersTest() {
-    JelenideDriver driver1 = new JelenideDriver(new ChromeDriver());
-    driver1.timeout = 10_000;
-    driver1.pollingInterval = 1_000;
-    driver1.maximize().open("https:/google.com/ncr");
+    DesiredCapabilities caps1 = DesiredCapabilities.chrome();
+    caps1.setCapability("timeout", "10000");
+    caps1.setCapability("pollingInterval", "100");
+    caps1.setCapability("takeScreenshot", "false");
 
-    JelenideDriver driver2 = new JelenideDriver(new ChromeDriver());
-    driver2.timeout = 10_000;
-    driver2.pollingInterval = 1_000;
-    driver2.open("https:/google.com/ncr");
+    WebDriver chromeDriver = new ChromeDriver(caps1);
+    JelenideDriver driver1 = new JelenideDriver(chromeDriver, caps1);
+
+    DesiredCapabilities caps2 = DesiredCapabilities.chrome();
+    JelenideDriver driver2 = new JelenideDriver(new ChromeDriver(caps2));
+
+
+    driver1.open("https://google.com/ncr");
+    driver2.open("https://google.com/ncr");
 
     driver1.$("#lst-ib").val("Selenium automates browsers").pressEnter();
+
     driver2.$("#lst-ib").val("Selenium automates browsers").pressEnter();
 
     driver1.$$(".g .r").filter(visible()).should(Have.size(10))

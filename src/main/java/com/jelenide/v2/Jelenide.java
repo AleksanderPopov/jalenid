@@ -21,7 +21,7 @@ public class Jelenide {
   }
 
   public static Jelement $(By locator) {
-    return new AbstractJelement(new ContextFinder(locator, getDriver()));
+    return new AbstractJelement(new ContextFinder(locator, getDriver()), getDriver());
   }
 
   public static Jelements<Jelement> $$(String css) {
@@ -29,13 +29,11 @@ public class Jelenide {
   }
 
   public static Jelements<Jelement> $$(By locator) {
-    return new AbstractJelements(new ContextFinder(locator, getDriver()));
+    return new AbstractJelements(new ContextFinder(locator, getDriver()), getDriver());
   }
 
-  public static FluentWait<? extends WebDriver> Wait() {
-    return new FluentWait<>(getDriver())
-            .withTimeout(getDriver().timeout, TimeUnit.MILLISECONDS)
-            .pollingEvery(getDriver().pollingInterval, TimeUnit.MILLISECONDS);
+  public static JelenideWait Wait() {
+    return getDriver().Wait();
   }
 
 }
