@@ -1,5 +1,6 @@
 package com.jelenide.v2.conditions;
 
+import com.jelenide.v2.exceptions.ConditionFailedException;
 import com.jelenide.v2.jelements.AbstractJelement;
 import com.jelenide.v2.jelements.Jelement;
 import org.openqa.selenium.WebDriverException;
@@ -37,10 +38,14 @@ public class Be {
       @Override
       public Jelement apply(Jelement jelement) {
         try {
-          return !jelement.toWebElement().isDisplayed() ? jelement : null;
+          if (!jelement.toWebElement().isDisplayed())
+            return jelement;
+          else
+            throw new ConditionFailedException("some nice condition error message");
         } catch (WebDriverException e) {
-          return null;
+          throw new ConditionFailedException("some nice condition error message", e);
         }
+
       }
     };
   }
