@@ -45,7 +45,7 @@ public class JelenideDriver implements WebDriver {
   public JelenideDriver(WebDriver driver, long timeout, long pollingInterval, boolean takeScreenshot) {
     this.driver = driver;
     this.takeScreenshot = takeScreenshot;
-    this.wait = new JelenideWait(new FluentWait<>(driver).withTimeout(timeout, TimeUnit.MILLISECONDS).pollingEvery(pollingInterval, TimeUnit.MILLISECONDS));
+    this.wait = new JelenideWait(driver, timeout, pollingInterval);
   }
 
   public JelenideDriver open(String url) {
@@ -76,12 +76,6 @@ public class JelenideDriver implements WebDriver {
 
   public JelenideWait Wait() {
     return wait;
-  }
-
-  public static void main(String[] args) {
-
-    JelenideDriver driver = new JelenideDriver(null);
-    driver.Wait().until(driver.$(""), Be.visible());
   }
 
   @Override

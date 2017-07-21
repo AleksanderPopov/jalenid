@@ -37,15 +37,15 @@ public class Be {
 
       @Override
       public Jelement apply(Jelement jelement) {
-        try {
           if (!jelement.toWebElement().isDisplayed())
             return jelement;
           else
-            throw new ConditionFailedException("some nice condition error message");
-        } catch (WebDriverException e) {
-          throw new ConditionFailedException("some nice condition error message", e);
-        }
+            throw new ConditionFailedException("\nExpected: element is hidden\nActual: element is displayed");
+      }
 
+      @Override
+      public String toString() {
+        return "element is hidden";
       }
     };
   }

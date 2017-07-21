@@ -101,4 +101,22 @@ public class GoogleSearchTest {
 
   }
 
+  @Test
+  public void condidionsTest() {
+    RuntimeException exception = new RuntimeException();
+    DesiredCapabilities caps2 = DesiredCapabilities.chrome();
+    JelenideDriver driver2 = new JelenideDriver(new ChromeDriver(caps2));
+
+    driver2.open("https://google.com/ncr");
+    try {
+      driver2.$("#lst-ib").should(Be.hidden());
+    } catch (RuntimeException e) {
+      exception = e;
+    }
+
+    driver2.close();
+    driver2.quit();
+    throw exception;
+  }
+
 }
